@@ -49,7 +49,6 @@ plugins:
   - git-committers:
        repository: khammami/bskyfeeddigest
        branch: main
-       token: !ENV MDOCS_GH_TOKEN
   - git-revision-date-localized:
       enable_creation_date: true
 
