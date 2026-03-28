@@ -4,7 +4,7 @@
 
 # The AT URI of the Bluesky feed to digest.
 # Find this in the feed's URL on bsky.app or via the API.
-feed_uri: "at://did:plc:ppsghcl5bbpgjcljnhra353s/app.bsky.feed.generator/global.ecology"
+feed_uri: "at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/bsky-team"
 
 # Human-readable name for the feed (used in page titles & headers).
 feed_name: "Global Ecology"
