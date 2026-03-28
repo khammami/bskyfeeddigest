@@ -10,7 +10,7 @@ import sys
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
-import httpx
+from atproto import Client
 import yaml
 
 # ---------------------------------------------------------------------------
@@ -57,11 +57,11 @@ def week_range(ref_date: date | None = None) -> tuple[date, date]:
 
 
 # ---------------------------------------------------------------------------
-# Auth (optional, only for private feeds)
+
+# Auth and API client using atproto
 # ---------------------------------------------------------------------------
 
-def create_session(client: httpx.Client) -> str:
-    """Authenticate and return an access JWT."""
+def create_atproto_client() -> Client:
     handle = os.environ.get("BLUESKY_HANDLE", "")
     password = os.environ.get("BLUESKY_APP_PASSWORD", "")
     if not handle or not password:
@@ -71,12 +71,9 @@ def create_session(client: httpx.Client) -> str:
             file=sys.stderr,
         )
         sys.exit(1)
-    resp = client.post(
-        f"{AUTH_API}/xrpc/com.atproto.server.createSession",
-        json={"identifier": handle, "password": password},
-    )
-    resp.raise_for_status()
-    return resp.json()["accessJwt"]
+    client = Client()
+    client.login(handle, password)
+    return client
 
 
 # ---------------------------------------------------------------------------
@@ -84,28 +81,76 @@ def create_session(client: httpx.Client) -> str:
 # ---------------------------------------------------------------------------
 
 def fetch_feed(cfg: dict) -> list[dict]:
-    """Return a list of feed-view post objects from the Bluesky API."""
+    """Return a list of feed-view post objects from the Bluesky API using atproto SDK."""
     feed_uri = cfg["feed_uri"]
+    # Extract DID or handle from AT URI (e.g., 'at://did:plc:xxx/app.bsky.feed.generator/yyy')
+    if feed_uri.startswith("at://"):
+        repo = feed_uri.split("/")[2]
+    else:
+        repo = feed_uri
     auth_required = cfg.get("auth_required", False)
 
-    headers: dict[str, str] = {}
-    base_url = PUBLIC_API
-
-    with httpx.Client(timeout=30) as client:
-        if auth_required:
-            token = create_session(client)
-            headers["Authorization"] = f"Bearer {token}"
-
-        posts: list[dict] = []
-        cursor: str | None = None
-        for _ in range(3):  # up to 300 posts
-            params: dict[str, str | int] = {"feed": feed_uri, "limit": 100}
+    posts: list[dict] = []
+    cursor: str | None = None
+    import httpx
+    feed_uri = cfg["feed_uri"]
+    # Detect algorithmic feed ("What's Hot")
+    is_whats_hot = (
+        "whats-hot" in feed_uri
+        or feed_uri.strip() == "at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/whats-hot"
+    )
+    if is_whats_hot:
+        posts = []
+        cursor = None
+        for _ in range(3):
+            params = {"limit": 100}
             if cursor:
                 params["cursor"] = cursor
-            resp = client.get(
-                f"{base_url}/xrpc/app.bsky.feed.getFeed",
+            # Try getPopular first
+            resp = httpx.get(
+                "https://public.api.bsky.app/xrpc/app.bsky.feed.getPopular",
                 params=params,
-                headers=headers,
+                timeout=30,
+            )
+            if resp.status_code == 501:
+                # Fallback to getTimeline if not implemented
+                resp = httpx.get(
+                    "https://public.api.bsky.app/xrpc/app.bsky.feed.getTimeline",
+                    params=params,
+                    timeout=30,
+                )
+            if resp.status_code == 401:
+                print("[ERROR] Unauthorized: The public API does not allow access to this feed.")
+                return []
+            resp.raise_for_status()
+            data = resp.json()
+            posts.extend(data.get("feed", []))
+            cursor = data.get("cursor")
+            if not cursor:
+                break
+        return posts
+    elif auth_required:
+        client = create_atproto_client()
+        for _ in range(3):
+            params = {"feed": feed_uri, "limit": 100}
+            if cursor:
+                params["cursor"] = cursor
+            resp = client.app.bsky.feed.get_feed(params)
+            feed = getattr(resp, "feed", [])
+            posts.extend(feed)
+            cursor = getattr(resp, "cursor", None)
+            if not cursor:
+                break
+        return posts
+    else:
+        for _ in range(3):
+            params = {"feed": feed_uri, "limit": 100}
+            if cursor:
+                params["cursor"] = cursor
+            resp = httpx.get(
+                "https://public.api.bsky.app/xrpc/app.bsky.feed.getFeed",
+                params=params,
+                timeout=30,
             )
             resp.raise_for_status()
             data = resp.json()
@@ -113,18 +158,25 @@ def fetch_feed(cfg: dict) -> list[dict]:
             cursor = data.get("cursor")
             if not cursor:
                 break
-
-    return posts
+        return posts
 
 
 # ---------------------------------------------------------------------------
 # Post extraction helpers
 # ---------------------------------------------------------------------------
 
-def extract_uri_from_facets(record: dict) -> str | None:
-    for facet in record.get("facets", []):
-        for feature in facet.get("features", []):
-            uri = feature.get("uri")
+def extract_uri_from_facets(record: dict | None) -> str | None:
+    if not record or not isinstance(record, dict):
+        return None
+    facets = record.get("facets")
+    if not facets or not isinstance(facets, list):
+        return None
+    for facet in facets:
+        features = facet.get("features") if isinstance(facet, dict) else None
+        if not features or not isinstance(features, list):
+            continue
+        for feature in features:
+            uri = feature.get("uri") if isinstance(feature, dict) else None
             if uri:
                 return uri
     return None
@@ -176,12 +228,29 @@ def filter_posts(
         record = post.get("record", {})
         author = post.get("author", {})
 
-        created = record.get("createdAt", "")
+        # Convert record and author to dicts if they are pydantic models
+        if hasattr(record, "model_dump"):
+            record = record.model_dump()
+        elif hasattr(record, "dict"):
+            record = record.dict()
+        if hasattr(author, "model_dump"):
+            author = author.model_dump()
+        elif hasattr(author, "dict"):
+            author = author.dict()
+
+
+        # Try to robustly extract createdAt (could be 'createdAt', 'created_at', etc.)
+        created = record.get("createdAt") or record.get("created_at") or record.get("timestamp")
+        if not created:
+            # Debug: print record structure if date missing
+            print("[DEBUG] No createdAt found in record:", record)
+            continue
         try:
             post_date = datetime.fromisoformat(
                 created.replace("Z", "+00:00")
             ).date()
         except (ValueError, AttributeError):
+            print(f"[DEBUG] Could not parse date '{created}' in record: {record}")
             continue
 
         if post_date < start_date or post_date > end_date:
@@ -191,20 +260,42 @@ def filter_posts(
         if len(text) < min_len:
             continue
 
-        article_uri = (
-            extract_uri_from_facets(record) or extract_uri_from_embed(post)
+
+        # Ensure record is a dict for extract_uri_from_facets
+        article_uri = extract_uri_from_facets(record)
+        if not article_uri:
+            article_uri = extract_uri_from_embed(post)
+
+        # Try to get author info from multiple possible locations
+        author_handle = author.get("handle") or record.get("author") or record.get("handle") or "unknown"
+        author_name = author.get("displayName") or author.get("handle") or record.get("author") or record.get("handle") or "unknown"
+        author_avatar = author.get("avatar", "")
+
+        # Debug: print author info if unknown
+        if author_handle == "unknown":
+            print(f"[DEBUG] Author unknown for post record: {record} | author: {author}")
+
+        # Try to get like count from multiple possible locations
+        likes = (
+            post.get("likeCount")
+            or record.get("likeCount")
+            or record.get("likes")
+            or record.get("reactions", {}).get("like")
+            or 0
         )
+
+        # Debug: print like info if 0
+        if likes == 0:
+            print(f"[DEBUG] Likes is 0 for post record: {record} | post: {post}")
 
         results.append(
             {
-                "author_handle": author.get("handle", "unknown"),
-                "author_name": author.get(
-                    "displayName", author.get("handle", "unknown")
-                ),
-                "author_avatar": author.get("avatar", ""),
+                "author_handle": author_handle,
+                "author_name": author_name,
+                "author_avatar": author_avatar,
                 "text": text,
                 "date": post_date.isoformat(),
-                "likes": post.get("likeCount", 0) or 0,
+                "likes": likes,
                 "article_uri": article_uri,
                 "bsky_url": post_bsky_url(post.get("uri", "")),
             }
