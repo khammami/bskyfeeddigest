@@ -315,99 +315,29 @@ def generate_blog_post(
     start_date: date,
     end_date: date,
 ) -> str:
-    """Generate a Markdown blog post for the Material blog plugin."""
+    """Generate a Markdown blog post using a Jinja2 template."""
+    from jinja2 import Environment, FileSystemLoader, select_autoescape
+    template_dir = Path(__file__).parent
+    env = Environment(
+        loader=FileSystemLoader(str(template_dir)),
+        autoescape=select_autoescape(['html', 'xml'])
+    )
+    template = env.get_template("blog_post.md.j2")
     feed_name = cfg.get("feed_name", "Bluesky Feed")
     logo_url = cfg.get("logo_url", "")
     feed_bsky_url = cfg.get("feed_bsky_url", "")
     week_id = end_date.strftime("%G-W%V")
-
-    lines: list[str] = []
-
-    # Blog front matter
-    lines.append("---")
-    lines.append(f"date: {end_date.isoformat()}")
-    lines.append(f'description: "{len(posts)} posts from {start_date} to {end_date}"')
-    lines.append("hide:")
-    lines.append("  - navigation")
-    lines.append("  - toc")
-    lines.append("---")
-    lines.append("")
-
-    # Title
-    icon = (
-        f'<img src="{logo_url}" alt="" style="height:1.2em;vertical-align:middle"> '
-        if logo_url
-        else ""
+    rendered = template.render(
+        posts=posts,
+        cfg=cfg,
+        start_date=start_date,
+        end_date=end_date,
+        feed_name=feed_name,
+        logo_url=logo_url,
+        feed_bsky_url=feed_bsky_url,
+        week_id=week_id,
     )
-    lines.append(
-        f"# {icon}{feed_name} Digest — {week_id}"
-    )
-    lines.append("")
-    lines.append(
-        f"Posts from **{start_date.strftime('%B %d, %Y')}** to "
-        f"**{end_date.strftime('%B %d, %Y')}**. "
-        f"Total: **{len(posts)}** posts."
-    )
-    lines.append("")
-
-    # Excerpt separator for blog listing
-    lines.append("<!-- more -->")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-
-    # Posts
-    for post in posts:
-        handle = post["author_handle"]
-        avatar = post["author_avatar"]
-        profile_url = f"https://bsky.app/profile/{handle}"
-
-        # Avatar + author line using inline HTML for layout
-        if avatar:
-            lines.append(
-                f'<div class="post-card" markdown>'
-            )
-            lines.append(
-                f'<img src="{avatar}" alt="" class="avatar">'
-            )
-            lines.append(
-                f'**{post["author_name"]}** '
-                f'[@{handle}]({profile_url}){{:target="_blank"}}'
-            )
-        else:
-            lines.append('<div class="post-card" markdown>')
-            lines.append(
-                f'**{post["author_name"]}** '
-                f'[@{handle}]({profile_url}){{:target="_blank"}}'
-            )
-
-        lines.append("")
-        lines.append(
-            f'<span class="post-meta">{post["date"]} · '
-            f':heart: {post["likes"]}</span>'
-        )
-        lines.append("")
-        lines.append(post["text"])
-        lines.append("")
-
-        if post["article_uri"]:
-            lines.append(
-                f':link: <{post["article_uri"]}>'
-            )
-            lines.append("")
-
-        lines.append(
-            f'[:fontawesome-brands-bluesky: View on Bluesky]'
-            f'({post["bsky_url"]}){{:target="_blank" .md-button}}'
-        )
-        lines.append("")
-        lines.append("</div>")
-        lines.append("")
-        lines.append("---")
-        lines.append("")
-
-    return "\n".join(lines)
-
+    return rendered
 
 # ---------------------------------------------------------------------------
 # Data index

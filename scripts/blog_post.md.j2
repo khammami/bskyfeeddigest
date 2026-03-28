@@ -1,0 +1,35 @@
+---
+date: 
+  created: {{ end_date.isoformat() }}
+description: "{{ posts|length }} posts from {{ start_date }} to {{ end_date }}"
+hide:
+  - navigation
+  - toc
+---
+
+# {% if logo_url %}<img src="{{ logo_url }}" alt="" style="height:1.2em;vertical-align:middle"> {% endif %}{{ feed_name }} Digest — {{ week_id }}
+
+Posts from **{{ start_date.strftime('%B %d, %Y') }}** to **{{ end_date.strftime('%B %d, %Y') }}**. Total: **{{ posts|length }}** posts.
+
+<!-- more -->
+
+---
+
+{% for post in posts %}
+<div class="post-card" markdown>
+## {% if post.author_avatar %} ![avatar of {{ post.author_name }}]({{ post.author_avatar }}){: .avatar } {% endif %} **{{ post.author_name }}** [@{{ post.author_handle }}](https://bsky.app/profile/{{ post.author_handle }}){:target="_blank"}
+
+  <span class="post-meta">{{ post.date }} · :heart: {{ post.likes }}</span>
+
+  {{ post.text }}
+
+  {% if post.article_uri %}
+[🔗 {{ post.article_uri }}]({{ post.article_uri }})
+  {% endif %}
+
+  [:fontawesome-brands-bluesky: View on Bluesky]({{ post.bsky_url }}){:target="_blank" .md-button}
+</div>
+
+---
+
+{% endfor %}

@@ -16,7 +16,7 @@ hide:
 
 **SCIENCE ONLY** — publications, data, jobs.
 
-[Browse Digests :material-arrow-right:](blog/){ .md-button .md-button--primary }
+[Browse Digests :material-arrow-right:](blog/index.md){ .md-button .md-button--primary }
 [About this project](about.md){ .md-button }
 
 </div>
