@@ -1,0 +1,66 @@
+site_name: Bluesky Feed Digest
+site_url: https://globalecologybs.github.io/bskyfeeddigest/
+site_description: Curated weekly digest of Bluesky feeds
+
+theme:
+  name: material
+  language: en
+  palette:
+    - scheme: default
+      primary: white
+      accent: grey
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: black
+      accent: grey
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  icon:
+    logo: material/earth
+  features:
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.indexes
+    - navigation.tabs
+    - navigation.top
+    - navigation.path
+    - search.suggest
+    - search.highlight
+
+plugins:
+  - search
+  - blog:
+      blog_dir: blog
+      post_date_format: long
+      archive: true
+      categories: false
+      pagination: true
+      pagination_per_page: 5
+
+markdown_extensions:
+  - md_in_html
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+extra_css:
+  - stylesheets/extra.css
+
+extra:
+  social:
+    - icon: fontawesome/brands/bluesky
+      link: https://bsky.app/profile/did:plc:ppsghcl5bbpgjcljnhra353s/feed/global.ecology
+      name: Bluesky Feed
+
+nav:
+  - Home: index.md
+  - Digests:
+    - blog/index.md
+  - About: about.md

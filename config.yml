@@ -1,0 +1,41 @@
+# Bluesky Feed Digest Configuration
+# ----------------------------------
+# Edit this file to configure your feed digest.
+
+# The AT URI of the Bluesky feed to digest.
+# Find this in the feed's URL on bsky.app or via the API.
+feed_uri: "at://did:plc:ppsghcl5bbpgjcljnhra353s/app.bsky.feed.generator/global.ecology"
+
+# Human-readable name for the feed (used in page titles & headers).
+feed_name: "Global Ecology"
+
+# Number of days to look back for posts (default: 7 = weekly digest).
+period_days: 7
+
+# Minimum post text length to include (filters out very short posts).
+min_post_length: 50
+
+# Number of digests shown per archive page.
+posts_per_archive_page: 10
+
+# Set to true if the feed requires authentication.
+# When true, set BLUESKY_HANDLE and BLUESKY_APP_PASSWORD as env vars / GitHub secrets.
+auth_required: false
+
+# Site base URL (used for canonical links and Open Graph).
+site_url: "https://globalecologybs.github.io/bskyfeeddigest/"
+
+# Site description for SEO / Open Graph.
+site_description: >-
+  Curated digest of the Bluesky Global Ecology feed on biodiversity,
+  ecosystems & conservation at large scales. Terrestrial, freshwater & marine realms.
+
+# Banner image URL (displayed at the top of each digest).
+banner_url: "https://raw.githubusercontent.com/globalecologybs/feeddigest.github.io/main/global_ecology_banner.png"
+
+# Logo image URL (used as favicon and inline icon).
+logo_url: "https://raw.githubusercontent.com/globalecologybs/feeddigest.github.io/main/global_ecology.jpg"
+
+# Feed page on Bluesky (linked from the header).
+feed_bsky_url: "https://bsky.app/profile/did:plc:ppsghcl5bbpgjcljnhra353s/feed/global.ecology"
+

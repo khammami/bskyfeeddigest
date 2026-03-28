@@ -1,0 +1,67 @@
+/* Post card styling */
+.post-card {
+  padding: 0.8em 0;
+}
+
+.post-card .avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin-right: 0.5em;
+  object-fit: cover;
+}
+
+.post-card strong {
+  font-size: 1rem;
+}
+
+.post-meta {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--md-default-fg-color--light);
+  margin: 0.2em 0 0.6em;
+}
+
+/* Minimalist header */
+.md-header {
+  box-shadow: none;
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+}
+
+/* Clean tabs */
+.md-tabs {
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+}
+
+/* Content area width */
+.md-grid {
+  max-width: 960px;
+}
+
+/* Button tweaks */
+.md-button {
+  font-size: 0.82rem;
+  padding: 0.3em 0.8em;
+}
+
+/* Blog post list cards */
+.md-post__meta {
+  font-size: 0.82rem;
+}
+
+/* Responsive banner image */
+.md-content img[alt*="Banner"] {
+  border-radius: 8px;
+  margin-bottom: 1em;
+}
+
+/* Hero section centering */
+.hero {
+  text-align: center;
+  padding: 1em 0;
+}
+
+.hero .md-button {
+  margin: 0.3em;
+}
