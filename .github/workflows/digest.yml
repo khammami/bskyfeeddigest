@@ -49,8 +49,6 @@ jobs:
         working-directory: scripts
         run: python fetch_digest.py
         env:
-          MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.GITHUB_TOKEN }}
-          MDOCS_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PERIOD_DAYS: ${{ github.event.inputs.period_days || '7' }}
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
@@ -65,6 +63,8 @@ jobs:
 
       - name: Build site
         run: mkdocs build --clean -f mkdocs.yml
+        env:
+          MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
