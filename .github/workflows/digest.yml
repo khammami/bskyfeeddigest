@@ -47,6 +47,7 @@ jobs:
         working-directory: scripts
         run: python fetch_digest.py
         env:
+          MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.GITHUB_TOKEN }}
           MDOCS_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PERIOD_DAYS: ${{ github.event.inputs.period_days || '7' }}
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
