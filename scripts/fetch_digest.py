@@ -329,6 +329,7 @@ def generate_blog_post(
     lines.append(f'description: "{len(posts)} posts from {start_date} to {end_date}"')
     lines.append("hide:")
     lines.append("  - navigation")
+    lines.append("  - toc")
     lines.append("---")
     lines.append("")
 
