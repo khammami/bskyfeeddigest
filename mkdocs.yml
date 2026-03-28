@@ -26,7 +26,7 @@ theme:
     text: Roboto
     code: Roboto Mono
   icon:
-    logo: material/earth
+    logo: fontawesome/brands/bluesky
   features:
     - navigation.instant
     - navigation.instant.prefetch
@@ -47,7 +47,7 @@ plugins:
       pagination: true
       pagination_per_page: 5
   - git-committers:
-       repository: khammami/code-in-action
+       repository: khammami/bskyfeeddigest
        branch: main
        token: !ENV MDOCS_GH_TOKEN
   - git-revision-date-localized:
