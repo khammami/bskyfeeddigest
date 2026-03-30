@@ -1,6 +1,6 @@
 ---
 title: Global Ecology Feed Digest
-description: "Curated weekly digest of the Bluesky Global Ecology feed on biodiversity, ecosystems & conservation at large scales."
+description: "Curated weekly digest of the Bluesky ATPROTO dev feed on ATPROTO development, ecosystem, and community news."
 hide:
   - navigation
   - toc
@@ -8,13 +8,11 @@ hide:
 
 <div class="hero" markdown>
 
-![Global Ecology Banner](https://raw.githubusercontent.com/globalecologybs/feeddigest.github.io/main/global_ecology_banner.png){ width="100%" }
+![Bluesky Digest Banner](./images/Gemini_Generated_Image_65bp8x65bp8x65bp.png){ width="100%" }
 
-# :butterfly: Global Ecology Feed Digest :earth_africa:
+# :butterfly: Bluesky Feed Digest
 
-**Curated weekly digest** of the Bluesky [Global Ecology feed](https://bsky.app/profile/did:plc:ppsghcl5bbpgjcljnhra353s/feed/global.ecology){:target="_blank"} on biodiversity, ecosystems & conservation at large scales. Terrestrial, freshwater & marine realms.
-
-**SCIENCE ONLY** — publications, data, jobs.
+**Curated weekly digest** of the Bluesky [ATPROTO dev feed](https://bsky.app/profile/did:plc:ewvi7nxzyoun6zhxrhs64oiz/feed/atproto-devs){:target="_blank"} on ATPROTO development, ecosystem, and community news.
 
 [Browse Digests :material-arrow-right:](blog/index.md){ .md-button .md-button--primary }
 [About this project](about.md){ .md-button }
