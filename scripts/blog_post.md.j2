@@ -53,8 +53,8 @@ Posts from **{{ start_date.strftime('%B %d, %Y') }}** to **{{ end_date.strftime(
 <img src="{{ link.thumb }}" class="link-thumb">
 {% endif %}
 <div class="link-info" markdown="1">
-**{{ link.title }}**
-<p class="link-desc">{{ link.description }}</p>
+{% if link.title %}**{{ link.title }}**{% endif %}
+{% if link.description %}<p class="link-desc">{{ link.description }}</p>{% endif %}
 <small>:material-link: {{ link.uri | truncate(50) }}</small>
 </div>
 </div>
