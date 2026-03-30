@@ -18,68 +18,71 @@ Posts from **{{ start_date.strftime('%B %d, %Y') }}** to **{{ end_date.strftime(
 {% for post in posts %}
 
 <!-- Post Card -->
-## {% if post.author_avatar %} ![avatar of {{ post.author_name }}]({{ post.author_avatar }}){: .avatar style="width:2.2em;height:2.2em;border-radius:50%;object-fit:cover;vertical-align:middle;" } {% endif %}
-**{{ post.author_name }}** [@{{ post.author_handle }}]({{ post.bsky_url }})
+## Post #{{ loop.index }} by @{{ post.author_handle }} on {{ post.date }}
 
-<span class="post-meta">{{ post.date }} · :heart: {{ post.likes }} · 💬 {{ post.replies }} · 🔁 {{ post.reposts }}{% if post.language %} · 🌐 {{ post.language }}{% endif %}{% if post.app_source %} · 🛠️ {{ post.app_source }}{% endif %}</span>
+!!! post-card "{{ post.date }} · :material-heart: {{ post.likes }} · :material-comment: {{ post.replies }} · :material-repeat: {{ post.reposts }}{% if post.language %} · :material-translate: {{ post.language }}{% endif %}{% if post.app_source %} · :material-apps: {{ post.app_source }}{% endif %}"
+    {% if post.author_avatar %} ![avatar of {{ post.author_name }}]({{ post.author_avatar }}){: .avatar style="width:2.2em;height:2.2em;border-radius:50%;object-fit:cover;vertical-align:middle;" } {% endif %}
+    **{{ post.author_name }}** [@{{ post.author_handle }}]({{ post.bsky_url }})
 
-{% if post.is_repost %}
-!!! info "Repost"
-    This is a repost.
-{% endif %}
+    {% if post.is_repost %}
+    !!! info "Repost"
+        This is a repost.
+    {% endif %}
 
-{% if post.is_quote and post.quoted_post %}
-!!! quote "Quoted from {{ post.quoted_post.author or 'unknown' }}"
-    {{ post.quoted_post.text }}
-    [View original]({{ post.quoted_post.uri }})
-{% endif %}
+    {% if post.is_quote and post.quoted_post %}
+    !!! quote "Quoted from {{ post.quoted_post.author or 'unknown' }}"
+        {{ post.quoted_post.text }}
+        [View original]({{ post.quoted_post.uri }})
+    {% endif %}
 
-{% if post.reply_to %}
-<span class="post-meta">In reply to <a href="{{ post.reply_to.url }}">{{ post.reply_to.author or post.reply_to.uri }}</a></span>
-{% endif %}
+    {% if post.reply_to %}
+    <span class="post-meta">In reply to <a href="{{ post.reply_to.url }}">{{ post.reply_to.author or post.reply_to.uri }}</a></span>
+    {% endif %}
 
-{{ post.text }}
+    {{ post.text }}
 
-{% if post.embed_images %}
-{% for img in post.embed_images %}
-![{{ img.alt }}]({{ img.url }}){: .gallery-img }
-{% endfor %}
-{% endif %}
+    {% if post.embed_images %}
+    {% for img in post.embed_images %}
+    ![{{ img.alt|replace('\n', ' ')|e }}]({{ img.url }}){ loading=lazy }
 
-{% if post.embed_links %}
-{% for link in post.embed_links %}
-{% if link.thumb %}![{{ link.title }}]({{ link.thumb }}){: .link-thumb }{% endif %}
-[{{ link.title }}]({{ link.uri }})
-{% if link.description %}
-> {{ link.description }}
-{% endif %}
-{% endfor %}
-{% endif %}
+    {% endfor %}
+    {% endif %}
 
-{% if post.mentions %}
-{% for mention in post.mentions %}
-<span class="chip">@{{ mention }}</span>
-{% endfor %}
-{% endif %}
+    {% if post.embed_links %}
+    {% for link in post.embed_links %}
+    !!! quote "Link preview"
+        {% if link.thumb %}![{{ link.title }}]({{ link.thumb }}){: .link-thumb }{% endif %}
+        [{{ link.title }}]({{ link.uri }})
+        {% if link.description %}
+        > {{ link.description }}
+        {% endif %}
+        {% endfor %}
+    {% endif %}
 
-{% if post.hashtags %}
-{% for tag in post.hashtags %}
-<span class="chip">#{{ tag }}</span>
-{% endfor %}
-{% endif %}
+    {% if post.mentions %}
+    {% for mention in post.mentions %}
+    <span class="chip">@{{ mention }}</span>
+    {% endfor %}
+    {% endif %}
 
-{% if post.links %}
-{% for link in post.links %}
-<span class="chip"><a href="{{ link }}" target="_blank">{{ link }}</a></span>
-{% endfor %}
-{% endif %}
+    {% if post.hashtags %}
+    {% for tag in post.hashtags %}
+    <span class="chip">#{{ tag }}</span>
+    {% endfor %}
+    {% endif %}
 
-{% if not post.is_public %}
-!!! warning "Post not public"
-    {% if post.is_deleted %}This post was deleted.{% elif post.is_filtered %}This post was filtered.{% endif %}
-{% endif %}
+    {% if post.links %}
+    {% for link in post.links %}
+    <span class="chip"><a href="{{ link }}" target="_blank">{{ link }}</a></span>
+    {% endfor %}
+    {% endif %}
 
-[🔗 View on Bluesky]({{ post.bsky_url }}){:target="_blank" .md-button}
+    {% if not post.is_public %}
+    !!! warning "Post not public"
+        {% if post.is_deleted %}This post was deleted.{% elif post.is_filtered %}This post was filtered.{% endif %}
+    {% endif %}
+
+    [:material-link: View on Bluesky]({{ post.bsky_url }}){:target="_blank" .md-button}
 
 
 ---
