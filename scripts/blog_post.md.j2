@@ -34,11 +34,11 @@ Posts from **{{ start_date.strftime('%B %d, %Y') }}** to **{{ end_date.strftime(
 
 {# --- Image Gallery Fix --- #}
 {% if post.embed_images %}
-<div class="bsky-images" markdown="1">
+<div class="bsky-image-grid bsky-grid-{{ post.embed_images|length }}" markdown="1">
 
 {% for img in post.embed_images %}
-{# Cleaning newlines in alt text prevents Markdown parser failure #}
-![{{ img.alt | replace('\n', ' ') | e }}]({{ img.url }})
+{# The { .bsky-img } part requires the 'attr_list' extension in mkdocs.yml #}
+![{{ img.alt | replace('\n', ' ') | e }}]({{ img.url }}){ .bsky-img }
 {% endfor %}
 
 </div>
