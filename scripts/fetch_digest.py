@@ -238,11 +238,119 @@ def filter_posts(
         elif hasattr(author, "dict"):
             author = author.dict()
 
+        # Extract reply/thread info
+        reply = record.get("reply", {})
+        reply_parent = reply.get("parent")
+        reply_root = reply.get("root")
+        reply_to = None
+        reply_parent_uri = None
+        # Skip replies: only include posts that are NOT replies
+        if reply_parent:
+            continue
+        # If you want to keep reply_to info for other uses, keep the following logic (not used for filtering now)
+        if reply_parent:
+            if isinstance(reply_parent, dict):
+                reply_parent_uri = reply_parent.get("uri")
+            else:
+                reply_parent_uri = reply_parent
+            reply_to = {
+                "uri": reply_parent_uri,
+                "url": post_bsky_url(reply_parent_uri) if reply_parent_uri else None,
+                "author": None,  # Could be filled if more info available
+            }
+
+        # Extract embed images and link previews
+        embed_images = []
+        embed_links = []
+        if "embed" in post and post["embed"]:
+            embed = post["embed"]
+            images = embed.get("images") or []
+            embed_images = [{"url": img.get("fullsize"), "alt": img.get("alt", "")} for img in images]
+            # Link previews (if present)
+            if "external" in embed:
+                ext = embed["external"]
+                embed_links.append({
+                    "uri": ext.get("uri"),
+                    "title": ext.get("title"),
+                    "description": ext.get("description"),
+                    "thumb": ext.get("thumb"),
+                })
+
+        # Mentions, hashtags, and links (facets)
+        facets = record.get("facets", [])
+        mentions = []
+        hashtags = []
+        links = []
+        if facets:
+            for facet in facets:
+                if facet.get("type") == "mention":
+                    mentions.append(facet.get("value"))
+                elif facet.get("type") == "link":
+                    links.append(facet.get("value"))
+        # Fallback: extract hashtags from text
+        text = clean_text(record.get("text", ""))
+        hashtags = re.findall(r"#(\w+)", text)
+
+        # Post type
+        post_type = record.get("type", "post")
+        is_repost = post_type == "app.bsky.feed.repost"
+        is_quote = post_type == "app.bsky.feed.quote"
+        quoted_post = None
+        if is_quote and "embed" in post and post["embed"]:
+            quoted = post["embed"].get("record")
+            if quoted:
+                quoted_post = {
+                    "author": quoted.get("author"),
+                    "text": quoted.get("text"),
+                    "uri": quoted.get("uri"),
+                }
+
+        # Source info
+        language = record.get("langs", [None])[0] if record.get("langs") else None
+        app_source = record.get("app") or record.get("via")
+
+        # Interaction counts
+        likes = (
+            post.get("likeCount")
+            or record.get("likeCount")
+            or record.get("likes")
+            or record.get("reactions", {}).get("like")
+            or 0
+        )
+        replies = (
+            post.get("replyCount")
+            or record.get("replyCount")
+            or record.get("replies")
+            or 0
+        )
+        reposts = (
+            post.get("repostCount")
+            or record.get("repostCount")
+            or record.get("reposts")
+            or 0
+        )
+
+        # Post status/visibility
+        is_deleted = post.get("deleted", False) or record.get("deleted", False)
+        is_filtered = post.get("filtered", False) or record.get("filtered", False)
+        is_public = not (is_deleted or is_filtered)
+
+        # Post URLs and IDs
+        post_uri = post.get("uri", "")
+        bsky_url = post_bsky_url(post_uri)
+
+        # Try to get author info from multiple possible locations
+        author_handle = author.get("handle") or record.get("author") or record.get("handle") or "unknown"
+        author_name = author.get("displayName") or author.get("handle") or record.get("author") or record.get("handle") or "unknown"
+        author_avatar = author.get("avatar", "")
+
+        # Debug: print author info if unknown
+        if author_handle == "unknown":
+            print(f"[DEBUG] Author unknown for post record: {record} | author: {author}")
 
         # Try to robustly extract createdAt (could be 'createdAt', 'created_at', etc.)
         created = record.get("createdAt") or record.get("created_at") or record.get("timestamp")
         if not created:
-            # Debug: print record structure if date missing
             print("[DEBUG] No createdAt found in record:", record)
             continue
         try:
@@ -256,37 +364,13 @@ def filter_posts(
         if post_date < start_date or post_date > end_date:
             continue
 
-        text = clean_text(record.get("text", ""))
         if len(text) < min_len:
             continue
-
 
         # Ensure record is a dict for extract_uri_from_facets
         article_uri = extract_uri_from_facets(record)
         if not article_uri:
             article_uri = extract_uri_from_embed(post)
-
-        # Try to get author info from multiple possible locations
-        author_handle = author.get("handle") or record.get("author") or record.get("handle") or "unknown"
-        author_name = author.get("displayName") or author.get("handle") or record.get("author") or record.get("handle") or "unknown"
-        author_avatar = author.get("avatar", "")
-
-        # Debug: print author info if unknown
-        if author_handle == "unknown":
-            print(f"[DEBUG] Author unknown for post record: {record} | author: {author}")
-
-        # Try to get like count from multiple possible locations
-        likes = (
-            post.get("likeCount")
-            or record.get("likeCount")
-            or record.get("likes")
-            or record.get("reactions", {}).get("like")
-            or 0
-        )
-
-        # Debug: print like info if 0
-        if likes == 0:
-            print(f"[DEBUG] Likes is 0 for post record: {record} | post: {post}")
 
         results.append(
             {
@@ -296,8 +380,26 @@ def filter_posts(
                 "text": text,
                 "date": post_date.isoformat(),
                 "likes": likes,
+                "replies": replies,
+                "reposts": reposts,
                 "article_uri": article_uri,
-                "bsky_url": post_bsky_url(post.get("uri", "")),
+                "bsky_url": bsky_url,
+                "reply_to": reply_to,
+                "reply_root": reply_root,
+                "embed_images": embed_images,
+                "embed_links": embed_links,
+                "mentions": mentions,
+                "hashtags": hashtags,
+                "links": links,
+                "is_repost": is_repost,
+                "is_quote": is_quote,
+                "quoted_post": quoted_post,
+                "language": language,
+                "app_source": app_source,
+                "is_deleted": is_deleted,
+                "is_filtered": is_filtered,
+                "is_public": is_public,
+                "post_uri": post_uri,
             }
         )
 
