@@ -142,3 +142,64 @@
     margin: 0;
     font-size: 0.7rem;
 }
+
+/* Prevent long text from breaking the layout */
+.bsky-card {
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Link Preview "Card-in-Card" Styling */
+.bsky-link-preview-wrapper {
+    text-decoration: none !important;
+    color: inherit !important;
+    display: block;
+    margin-top: 10px;
+}
+
+.bsky-link-preview {
+    display: flex;
+    border: 1px solid var(--md-typeset-table-color);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--md-default-bg-color);
+    transition: background 0.2s;
+}
+
+.bsky-link-preview:hover {
+    background: var(--md-accent-fg-color--transparent);
+}
+
+.link-thumb {
+    width: 120px !important;
+    height: 120px !important;
+    object-fit: cover;
+    margin: 0 !important;
+    border-right: 1px solid var(--md-typeset-table-color);
+}
+
+.link-info {
+    padding: 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.link-desc {
+    font-size: 0.8rem;
+    margin: 4px 0 !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limits description to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    color: var(--md-default-fg-color--light);
+}
+
+/* Image Alt-Text Tooltip Fix */
+/* This makes the image expand to fit the card width */
+.bsky-images img {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
