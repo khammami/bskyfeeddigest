@@ -85,3 +85,60 @@
 .hero .md-button {
   margin: 0.3em;
 }
+
+/* The Card Container */
+.bsky-card {
+    border: 1px solid var(--md-typeset-table-color, #e0e0e0);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    background: var(--md-code-bg-color);
+}
+
+/* Header Alignment */
+.bsky-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1rem;
+}
+
+.bsky-avatar {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 50% !important;
+    margin: 0 !important; /* Prevents MkDocs default image margins */
+}
+
+.bsky-author-meta {
+    line-height: 1.4;
+}
+
+/* Body Content */
+.bsky-content {
+    margin: 1rem 0;
+}
+
+.bsky-content img {
+    border-radius: 8px;
+    margin-top: 0.5rem;
+    max-height: 500px;
+    width: auto;
+}
+
+/* Footer & Icons */
+.bsky-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--md-typeset-table-color);
+    padding-top: 1rem;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+/* Make the button look like a real button */
+.bsky-footer .md-button {
+    margin: 0;
+    font-size: 0.7rem;
+}
