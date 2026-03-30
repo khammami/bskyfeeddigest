@@ -4,7 +4,7 @@
 
 # The AT URI of the Bluesky feed to digest.
 # Find this in the feed's URL on bsky.app or via the API.
-feed_uri: "at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/bsky-team"
+feed_uri: "at://did:plc:ewvi7nxzyoun6zhxrhs64oiz/app.bsky.feed.generator/atproto-devs"
 
 # Human-readable name for the feed (used in page titles & headers).
 feed_name: "Global Ecology"
@@ -13,7 +13,7 @@ feed_name: "Global Ecology"
 period_days: 7
 
 # Minimum post text length to include (filters out very short posts).
-min_post_length: 30
+min_post_length: 0
 
 # Number of digests shown per archive page.
 posts_per_archive_page: 10
