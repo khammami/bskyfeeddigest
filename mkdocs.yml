@@ -1,0 +1,131 @@
+# MkDocs configuration for Bluesky Feed Digest
+
+# Site information
+site_name: Bluesky Feed Digest
+site_url: https://khammami.github.io/bskyfeeddigest/
+site_description: Curated weekly digest of Bluesky feeds
+
+# Repository information
+repo_url: https://github.com/khammami/bskyfeeddigest
+repo_name: khammami/bskyfeeddigest
+edit_uri: edit/main/docs/
+
+# Copyright information
+copyright: "&copy; 2026 Khalil Hammami (@khammami)."
+
+# Theme configuration
+theme:
+  name: material
+  language: en
+  palette:
+    - scheme: default
+      primary: white
+      accent: grey
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: black
+      accent: grey
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  icon:
+    logo: fontawesome/brands/bluesky
+  features:
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.indexes
+    - navigation.tabs
+    - navigation.top
+    - navigation.path
+    - search.suggest
+    - search.highlight
+
+# Plugins configuration
+plugins:
+  - search
+  - blog:
+      blog_dir: blog
+      post_date_format: long
+      archive: true
+      categories: false
+      pagination: true
+      pagination_per_page: 5
+  - git-committers:
+       repository: khammami/bskyfeeddigest
+       branch: main
+  - git-revision-date-localized:
+      enable_creation_date: true
+
+# Markdown extensions configuration
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+  - pymdownx.highlight:
+      linenums: true
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      normalize_issue_symbols: true
+      repo_url_shorthand: true
+      user: khammami
+      repo: bskyfeeddigest
+  - pymdownx.mark
+  - pymdownx.smartsymbols:
+      copyright: false
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+      combine_header_slug: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+  - pymdownx.critic
+  - tables
+
+# Custom CSS
+extra_css:
+  - stylesheets/extra.css
+
+# Extra configuration for social links
+extra:
+  social:
+    - icon: fontawesome/brands/bluesky
+      link: https://bsky.app/profile/did:plc:ewvi7nxzyoun6zhxrhs64oiz/feed/atproto-devs
+      name: Bluesky Feed
+
+# Navigation structure
+nav:
+  - Home: index.md
+  - Digests:
+    - blog/index.md
+  - About: about.md

@@ -1,0 +1,277 @@
+:root {
+  --md-admonition-icon--post-card: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>newspaper-variant</title><path d="M20 3H4C2.89 3 2 3.89 2 5V19C2 20.11 2.89 21 4 21H20C21.11 21 22 20.11 22 19V5C22 3.89 21.11 3 20 3M5 7H10V13H5V7M19 17H5V15H19V17M19 13H12V11H19V13M19 9H12V7H19V9Z" /></svg>');
+}
+
+.md-typeset .admonition.post-card,
+.md-typeset details.post-card {
+  border-color: #006AFF;
+  border-width: 0;
+  box-shadow: none;
+}
+
+.md-typeset .post-card>.admonition-title,
+.md-typeset .post-card>summary {
+  background-color: #00000005;
+}
+
+.md-typeset .post-card>.admonition-title::before,
+.md-typeset .post-card>summary::before {
+  background-color: #006AFF;
+  -webkit-mask-image: var(--md-admonition-icon--post-card);
+  mask-image: var(--md-admonition-icon--post-card);
+}
+
+/* Post card styling */
+.post-card {
+  padding: 0.8em 0;
+}
+
+.post-card .avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin-right: 0.5em;
+  object-fit: cover;
+}
+
+.post-card strong {
+  font-size: 1rem;
+}
+
+.post-meta {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--md-default-fg-color--light);
+  margin: 0.2em 0 0.6em;
+}
+
+/* Minimalist header */
+.md-header {
+  box-shadow: none;
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+}
+
+/* Clean tabs */
+.md-tabs {
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+}
+
+/* Content area width */
+.md-grid {
+  max-width: 960px;
+}
+
+/* Button tweaks */
+.md-button {
+  font-size: 0.82rem;
+  padding: 0.3em 0.8em;
+}
+
+/* Blog post list cards */
+.md-post__meta {
+  font-size: 0.82rem;
+}
+
+/* Responsive banner image */
+.md-content img[alt*="Banner"] {
+  border-radius: 8px;
+  margin-bottom: 1em;
+}
+
+/* Hero section centering */
+.hero {
+  text-align: center;
+  padding: 1em 0;
+}
+
+.hero .md-button {
+  margin: 0.3em;
+}
+
+/* The Card Container */
+.bsky-card {
+  border: 1px solid var(--md-typeset-table-color, #e0e0e0);
+  border-radius: 8px;
+  padding: 0 1.5rem;
+  margin: 1rem 0;
+  /* background: var(--md-code-bg-color); */
+}
+
+/* Header Alignment */
+.bsky-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.bsky-avatar {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 50% !important;
+  margin: 0 !important;
+  /* Prevents MkDocs default image margins */
+}
+
+.bsky-author-meta {
+  line-height: 1.4;
+}
+
+/* Body Content */
+.bsky-content {
+  margin: 1rem 0;
+  padding-left: 60px;
+  /* Space for the avatar */
+}
+
+.bsky-content img {
+  display: block;
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  max-height: 500px;
+  width: auto;
+}
+
+/* Footer & Icons */
+.bsky-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--md-typeset-table-color);
+  /* padding-top: 1rem; */
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+/* Make the button look like a real button */
+.bsky-footer .md-button {
+  margin: 0;
+  font-size: 0.7rem;
+}
+
+/* Prevent long text from breaking the layout */
+.bsky-card {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Link Preview "Card-in-Card" Styling */
+.bsky-link-preview-wrapper {
+  text-decoration: none !important;
+  color: inherit !important;
+  display: block;
+  margin-top: 10px;
+}
+
+.bsky-link-preview {
+  display: flex;
+  border: 1px solid var(--md-typeset-table-color);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--md-default-bg-color);
+  transition: background 0.2s;
+}
+
+.bsky-link-preview p {
+  margin: 0;
+}
+
+.bsky-link-preview:hover {
+  background: var(--md-accent-fg-color--transparent);
+}
+
+.link-thumb {
+  width: 120px !important;
+  height: 120px !important;
+  object-fit: cover;
+  margin: 0 !important;
+  border-right: 1px solid var(--md-typeset-table-color);
+}
+
+.link-info {
+  padding: 0 12px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.link-desc {
+  font-size: 0.8rem;
+  margin: 4px 0 !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  /* Limits description to 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: var(--md-default-fg-color--light);
+}
+
+/* Image Alt-Text Tooltip Fix */
+/* This makes the image expand to fit the card width */
+.bsky-images img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+/* Base Grid Settings */
+.bsky-image-grid {
+  display: grid;
+  gap: 4px;
+  /* Small social-media style gap */
+  margin-top: 12px;
+  border-radius: 12px;
+  overflow: hidden;
+  /* Clips the corners of the images inside */
+  border: 1px solid var(--md-typeset-table-color);
+}
+
+.bsky-image-grid p{
+  margin: 0;
+}
+
+/* Ensure images fill their grid cells perfectly */
+.bsky-img {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  /* This is the secret to uniform grids */
+  margin: 0 !important;
+}
+
+/* 1 Image: Standard wide view */
+.bsky-grid-1 {
+  grid-template-columns: 1fr;
+}
+
+/* 2 Images: Side by Side */
+.bsky-grid-2 {
+  grid-template-columns: 1fr 1fr;
+  aspect-ratio: 16 / 9;
+}
+
+/* 3 Images: 1 Large Left, 2 Small Right */
+.bsky-grid-3 {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  aspect-ratio: 16 / 9;
+}
+
+.bsky-grid-3 .bsky-img:first-child {
+  grid-row: span 2;
+}
+
+/* 4 Images: Perfect 2x2 Square */
+.bsky-grid-4 {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  aspect-ratio: 1 / 1;
+  /* Classic Instagram/Twitter style square */
+}
+
+.bsky-footer .bsky-stats{
+  opacity: 0.7;
+}

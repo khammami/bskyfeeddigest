@@ -1,0 +1,75 @@
+---
+date: 
+  created: {{ end_date.isoformat() }}
+description: "{{ posts|length }} posts from {{ start_date }} to {{ end_date }}"
+hide:
+  - navigation
+  - toc
+---
+
+# {% if logo_url %}<img src="{{ logo_url }}" alt="" style="height:1.2em;vertical-align:middle"> {% endif %}{{ feed_name }} Digest — {{ week_id }}
+
+Posts from **{{ start_date.strftime('%B %d, %Y') }}** to **{{ end_date.strftime('%B %d, %Y') }}**. Total: **{{ posts|length }}** posts.
+
+<!-- more -->
+
+---
+
+{% for post in posts %}
+<div class="bsky-card" markdown="1">
+
+<div class="bsky-header" markdown="1">
+{% if post.author_avatar %}
+<img src="{{ post.author_avatar }}" class="bsky-avatar">
+{% endif %}
+<div class="bsky-author-meta" markdown="1">
+**{{ post.author_name }}** [@{{ post.author_handle }}]({{ post.bsky_url }})
+<br><small>{{ post.date }}</small>
+</div>
+</div>
+
+<div class="bsky-content" markdown="1">
+
+{{ post.text }}
+
+{# --- Image Gallery Fix --- #}
+{% if post.embed_images %}
+<div class="bsky-image-grid bsky-grid-{{ post.embed_images|length }}" markdown="1">
+
+{% for img in post.embed_images %}
+{# The { .bsky-img } part requires the 'attr_list' extension in mkdocs.yml #}
+![{{ img.alt | replace('\n', ' ') | e }}]({{ img.url }}){ .bsky-img }
+{% endfor %}
+
+</div>
+{% endif %}
+
+{# --- Link Preview (Card-in-Card) Fix --- #}
+{% if post.embed_links %}
+{% for link in post.embed_links %}
+<a href="{{ link.uri }}" class="bsky-link-preview-wrapper" target="_blank">
+<div class="bsky-link-preview" markdown="1">
+{% if link.thumb %}
+<img src="{{ link.thumb }}" class="link-thumb">
+{% endif %}
+<div class="link-info" markdown="1">
+{% if link.title %}**{{ link.title }}**{% endif %}
+{% if link.description %}<p class="link-desc">{{ link.description }}</p>{% endif %}
+<small>:material-link: {{ link.uri | truncate(50) }}</small>
+</div>
+</div>
+</a>
+{% endfor %}
+{% endif %}
+
+</div>
+
+<div class="bsky-footer" markdown="1">
+<div class="bsky-stats" markdown="1">
+:material-heart: {{ post.likes }} &nbsp; :material-repeat: {{ post.reposts }} &nbsp; :material-comment: {{ post.replies }}
+</div>
+[View on Bluesky :material-open-in-new:]({{ post.bsky_url }}){ .md-button .md-button--primary }
+</div>
+
+</div>
+{% endfor %}
