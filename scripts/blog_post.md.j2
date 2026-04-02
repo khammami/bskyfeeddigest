@@ -16,7 +16,7 @@ Posts from **{{ start_date.strftime('%B %d, %Y') }}** to **{{ end_date.strftime(
 ---
 
 {% for post in posts %}
-## **{{ loop.index }}. Post by @{{ post.author_handle }} on {{ post.date }}**
+## **{{ loop.index }}. Post by `@{{ post.author_handle }}` on {{ post.date }}**
 
 <div class="bsky-card" markdown="1">
 
