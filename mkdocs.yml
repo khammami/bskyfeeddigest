@@ -60,6 +60,11 @@ plugins:
        branch: main
   - git-revision-date-localized:
       enable_creation_date: true
+  - rss:
+        match_path: "blog/posts/.*"
+        date_from_meta:
+          as_creation: date.created
+          as_update: date.updated
 
 # Markdown extensions configuration
 markdown_extensions:
