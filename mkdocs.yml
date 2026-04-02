@@ -97,11 +97,11 @@ markdown_extensions:
       pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.keys
-  - pymdownx.magiclink:
-      normalize_issue_symbols: true
-      repo_url_shorthand: true
-      user: khammami
-      repo: bskyfeeddigest
+  # - pymdownx.magiclink:
+  #     normalize_issue_symbols: true
+  #     repo_url_shorthand: true
+  #     user: khammami
+  #     repo: bskyfeeddigest
   - pymdownx.mark
   - pymdownx.smartsymbols:
       copyright: false
