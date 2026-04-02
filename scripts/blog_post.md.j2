@@ -16,6 +16,8 @@ Posts from **{{ start_date.strftime('%B %d, %Y') }}** to **{{ end_date.strftime(
 ---
 
 {% for post in posts %}
+## **{{ loop.index }}. Post by @{{ post.author_handle }} on {{ post.date }}**
+
 <div class="bsky-card" markdown="1">
 
 <div class="bsky-header" markdown="1">
@@ -23,7 +25,7 @@ Posts from **{{ start_date.strftime('%B %d, %Y') }}** to **{{ end_date.strftime(
 <img src="{{ post.author_avatar }}" class="bsky-avatar">
 {% endif %}
 <div class="bsky-author-meta" markdown="1">
-**{{ post.author_name }}** [@{{ post.author_handle }}]({{ post.bsky_url }})
+**{{ post.author_name }}** [@{{ post.author_handle }}]({{ post.author_url }})
 <br><small>{{ post.date }}</small>
 </div>
 </div>

@@ -341,6 +341,8 @@ def filter_posts(
 
         # Try to get author info from multiple possible locations
         author_handle = author.get("handle") or record.get("author") or record.get("handle") or "unknown"
+        author_did = author.get("did", "")
+        author_url = f"https://bsky.app/profile/{author_did}"
         author_name = author.get("displayName") or author.get("handle") or record.get("author") or record.get("handle") or "unknown"
         author_avatar = author.get("avatar", "")
 
@@ -376,6 +378,7 @@ def filter_posts(
             {
                 "author_handle": author_handle,
                 "author_name": author_name,
+                "author_url": author_url,
                 "author_avatar": author_avatar,
                 "text": text,
                 "date": post_date.isoformat(),
