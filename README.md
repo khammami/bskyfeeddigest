@@ -2,6 +2,10 @@
 
 Automated weekly digest of any Bluesky feed, built with Python and [Zensical](https://zensical.org) (by the Material for MkDocs team), deployed to GitHub Pages.
 
+![Screenshot of a sample digest (light mode)](assets/screenshot-light.png)
+
+![Screenshot of a sample digest (dark mode)](assets/screenshot-dark.png)
+
 ## Features
 
 - **Generic** — works with any public Bluesky feed URI; optional auth for private feeds
@@ -48,7 +52,7 @@ mkdocs build
 
 ## Project structure
 
-```
+```console
 ├── config.yml                  # Feed configuration (edit this)
 ├── mkdocs.yml               # Site configuration
 ├── scripts/
