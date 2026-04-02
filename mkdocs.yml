@@ -44,6 +44,11 @@ theme:
     - navigation.path
     - search.suggest
     - search.highlight
+    - content.action.edit
+    - content.action.view
+    - search.share
+    - toc.follow
+    - header.autohide
 
 # Plugins configuration
 plugins:
