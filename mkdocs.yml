@@ -132,6 +132,9 @@ extra:
     - icon: fontawesome/brands/bluesky
       link: https://bsky.app/profile/did:plc:ewvi7nxzyoun6zhxrhs64oiz/feed/atproto-devs
       name: Bluesky Feed
+    - icon: fontawesome/solid/rss-square
+      link: feed_rss_created.xml
+      name: RSS Feed
 
 # Navigation structure
 nav:
