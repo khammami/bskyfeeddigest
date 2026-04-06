@@ -2,8 +2,10 @@ name: Weekly Digest
 
 on:
   schedule:
-    # Every Monday at 08:00 UTC
+    # Every Monday at 08:00 TZ Africa/Tunis
+    # IANA timezone string: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
     - cron: "0 8 * * 1"
+      timezone: "Africa/Tunis"
   workflow_dispatch:
     inputs:
       period_days:
